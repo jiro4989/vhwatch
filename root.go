@@ -12,17 +12,28 @@ import (
 func init() {
 	cobra.OnInitialize()
 	RootCommand.Flags().IntP("col", "c", 2, "column count")
+	RootCommand.Flags().IntP("interval", "n", 2, "seconds to wait between updates")
 }
 
 var RootCommand = &cobra.Command{
 	Use:   "vhwatch",
-	Short: "Vertical/Horizontal Watch",
+	Short: "vhwatch is Vertical/Horizontal Watch",
 	Long: `
-	TODO
+vhwatch provides watching multiple commands execution.
+
+Repository: https://github.com/jiro4989/vhwatch
+    Author: jiro4989
+   Version: ` + Version + `
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		f := cmd.Flags()
+
 		col, err := f.GetInt("col")
+		if err != nil {
+			panic(err)
+		}
+
+		interval, err := f.GetInt("interval")
 		if err != nil {
 			panic(err)
 		}
@@ -36,14 +47,14 @@ var RootCommand = &cobra.Command{
 		termbox.Flush()
 
 		// 各ペイン毎にコマンドを定期実行
-		go mainloop(col, args)
+		go mainloop(col, args, time.Duration(interval))
 
 		// Ctrl-Cで終了されるまで待機
 		waitKeyInput()
 	},
 }
 
-func mainloop(col int, args []string) {
+func mainloop(col int, args []string, interval time.Duration) {
 	const fc = termbox.ColorDefault
 	const bc = termbox.ColorDefault
 	for {
@@ -76,7 +87,7 @@ func mainloop(col int, args []string) {
 			p.SetText(out, Offset{Y: 1}, fc, bc)
 		}
 		termbox.Flush()
-		time.Sleep(1 * time.Second)
+		time.Sleep(interval * time.Second)
 		termbox.Clear(fc, bc)
 	}
 }
