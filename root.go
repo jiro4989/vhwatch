@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/jiro4989/vhsw/log"
+	"github.com/jiro4989/vhwatch/log"
 	"github.com/spf13/cobra"
 )
 
