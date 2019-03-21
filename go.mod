@@ -16,6 +16,7 @@ require (
 	github.com/gordonklaus/ineffassign v0.0.0-20180909121442-1003c8bd00dc // indirect
 	github.com/hashicorp/go-version v1.0.0 // indirect
 	github.com/jgautheron/goconst v0.0.0-20170703170152-9740945f5dcb // indirect
+	github.com/jiro4989/taishoku v1.3.7 // indirect
 	github.com/kisielk/errcheck v1.2.0 // indirect
 	github.com/mattn/go-colorable v0.0.9 // indirect
 	github.com/mattn/go-isatty v0.0.4 // indirect
@@ -31,7 +32,8 @@ require (
 	github.com/opennota/check v0.0.0-20180911053232-0c771f5545ff // indirect
 	github.com/pkg/errors v0.8.0 // indirect
 	github.com/securego/gosec v0.0.0-20181211171558-12400f9a1ca7 // indirect
-	github.com/stretchr/testify v1.2.2
+	github.com/spf13/cobra v0.0.3
+	github.com/stretchr/testify v1.3.0
 	github.com/stripe/safesql v0.0.0-20171221195208-cddf355596fe // indirect
 	github.com/tcnksm/ghr v0.12.0 // indirect
 	github.com/tcnksm/go-gitconfig v0.1.2 // indirect

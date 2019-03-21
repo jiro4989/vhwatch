@@ -18,6 +18,7 @@ github.com/blang/semver v3.5.1+incompatible h1:cQNTCjp13qL8KC3Nbxr/y2Bqb63oX6wdn
 github.com/blang/semver v3.5.1+incompatible/go.mod h1:kRBLl5iJ+tD4TcOOxsy/0fnwebNt5EWlYSAyrTnjyyk=
 github.com/client9/misspell v0.3.4 h1:ta993UF76GwbvJcIo3Y68y/M3WxlpEHPWIGDkJYwzJI=
 github.com/client9/misspell v0.3.4/go.mod h1:qj6jICC3Q7zFZvVWo7KLAzC3yx5G7kyvSDkc90ppPyw=
+github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/golang/lint v0.0.0-20181217174547-8f45f776aaf1 h1:6DVPu65tee05kY0/rciBQ47ue+AnuY8KTayV6VHikIo=
@@ -31,8 +32,12 @@ github.com/gordonklaus/ineffassign v0.0.0-20180909121442-1003c8bd00dc h1:cJlkeAx
 github.com/gordonklaus/ineffassign v0.0.0-20180909121442-1003c8bd00dc/go.mod h1:cuNKsD1zp2v6XfE/orVX2QE1LC+i254ceGcVeDT3pTU=
 github.com/hashicorp/go-version v1.0.0 h1:21MVWPKDphxa7ineQQTrCU5brh7OuVVAzGOCnnCPtE8=
 github.com/hashicorp/go-version v1.0.0/go.mod h1:fltr4n8CU8Ke44wwGCBoEymUuxUHl09ZGVZPK5anwXA=
+github.com/inconshreveable/mousetrap v1.0.0 h1:Z8tu5sraLXCXIcARxBp/8cbvlwVa7Z1NHg9XEKhtSvM=
+github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
 github.com/jgautheron/goconst v0.0.0-20170703170152-9740945f5dcb h1:D5s1HIu80AcMGcqmk7fNIVptmAubVHHaj3v5Upex6Zs=
 github.com/jgautheron/goconst v0.0.0-20170703170152-9740945f5dcb/go.mod h1:82TxjOpWQiPmywlbIaB2ZkqJoSYJdLGPgAJDvM3PbKc=
+github.com/jiro4989/taishoku v1.3.7 h1:WZ6g8Nl3reS93L2P8UWpwPSEs1pdVIADDjQivGYZuIw=
+github.com/jiro4989/taishoku v1.3.7/go.mod h1:k1mWpricRwPYUOYA4c6rFlpTRCdhI0QlWRgQKDKS/Vc=
 github.com/kisielk/errcheck v1.2.0 h1:reN85Pxc5larApoH1keMBiu2GWtPqXQ1nc9gx+jOU+E=
 github.com/kisielk/errcheck v1.2.0/go.mod h1:/BMXB+zMLi60iA8Vv6Ksmxu/1UDYcXs4uQLJ+jE2L00=
 github.com/kisielk/gotool v0.0.0-20161130080628-0de1eaf82fa3 h1:s/sV9geKJwXXzcrFiQdiiIFgfesbREplXWR9ZFgnGSQ=
@@ -77,8 +82,15 @@ github.com/ryanuber/go-glob v0.0.0-20170128012129-256dc444b735 h1:7YvPJVmEeFHR1T
 github.com/ryanuber/go-glob v0.0.0-20170128012129-256dc444b735/go.mod h1:807d1WSdnB0XRJzKNil9Om6lcp/3a0v4qIHxIXzX/Yc=
 github.com/securego/gosec v0.0.0-20181211171558-12400f9a1ca7 h1:Ca7U7/rZ+caxjW2na7wbmgmaPsoSCIlpc6sm0aWtFg0=
 github.com/securego/gosec v0.0.0-20181211171558-12400f9a1ca7/go.mod h1:m3KbCTwh9vLhm6AKBjE+ALesKilKcQHezI1uVOti0Ks=
+github.com/spf13/cobra v0.0.3 h1:ZlrZ4XsMRm04Fr5pSFxBgfND2EBVa1nLpiy1stUsX/8=
+github.com/spf13/cobra v0.0.3/go.mod h1:1l0Ry5zgKvJasoi3XT1TypsSe7PqH0Sj9dhYf7v3XqQ=
+github.com/spf13/pflag v1.0.3 h1:zPAT6CGy6wXeQ7NtTnaTerfKOsV6V6F8agHXFiazDkg=
+github.com/spf13/pflag v1.0.3/go.mod h1:DYY7MBk1bdzusC3SYhjObp+wFpr4gzcvqqNjLnInEg4=
+github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.2.2 h1:bSDNvY7ZPG5RlJ8otE/7V6gMiyenm9RtJ7IUVIAoJ1w=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
+github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
+github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/stripe/safesql v0.0.0-20171221195208-cddf355596fe h1:g2/0xqQnO8Hnl8dN3/Z9XSeeaM7oKhKXktegZPELyRs=
 github.com/stripe/safesql v0.0.0-20171221195208-cddf355596fe/go.mod h1:q7b2n0JmzM1mVGfcYpanfVb2j23cXZeWFxcILPn3JV4=
 github.com/tcnksm/ghr v0.12.0 h1:3dbJOU5/Nr6C1HeBWwOIvMsVt4/eOg2EQDAg11H0Y0Y=
