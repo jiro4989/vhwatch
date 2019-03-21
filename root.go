@@ -89,8 +89,8 @@ func mainloop(col int, args []string, interval time.Duration) {
 			if err != nil {
 				panic(err)
 			}
-			p.SetHeader()
-			p.SetText(out, Offset{Y: 1}, fc, bc)
+			p.DrawHeader()
+			p.DrawText(out, Offset{Y: 1}, fc, bc)
 		}
 		termbox.Flush()
 		time.Sleep(interval * time.Second)
