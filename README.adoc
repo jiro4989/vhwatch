@@ -1,10 +1,49 @@
+:toc:
+:sectnums:
+
 = vhwatch (Vertical/Horizontal Watch)
 
-Goのテンプレートリポジトリ (CLI用途)
+vhwatch provides watching multiple commands execution.
 
-== 前提条件
+== development
 
-== 使い方
+ go version go1.11 linux/amd64
+
+== Usage
+
+please press Ctrl-C to exit vhwatch.
 
 [source,bash]
-vhwatch -V 'ls -la' -V 'ls -1' -H 'ls -l' -H 'ls -a'
+vhwatch 'ls -1' 'echo test' 'date'
+
+image::img/sample1.png[]
+
+[source,bash]
+vhwatch -c 1 'ls -1' 'echo test' 'date'
+
+image::img/sample2.png[]
+
+[source,bash]
+vhwatch -c 3 'echo 1' 'echo 2' 'echo 3' 'echo 4' 'echo 5' 'echo 6' 'echo 7'
+
+image::img/sample3.png[]
+
+== Help
+
+[source]
+----
+vhwatch provides watching multiple commands execution.
+
+Repository: https://github.com/jiro4989/vhwatch
+    Author: jiro4989
+   Version: 1.0.0
+
+Usage:
+  vhwatch [flags]
+
+Flags:
+  -c, --col int        column count (default 2)
+  -h, --help           help for vhwatch
+  -n, --interval int   seconds to wait between updates (default 2)
+----
+
