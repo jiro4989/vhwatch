@@ -1,12 +1,10 @@
-= vhsw (Vertical/Horizontal Split Watch)
+= vhwatch (Vertical/Horizontal Watch)
 
 Goのテンプレートリポジトリ (CLI用途)
 
 == 前提条件
 
-https://github.com/github/hub[hub]
-
 == 使い方
 
 [source,bash]
-vhsw -n 1 -v 'ls -la' -h 'cat tmp2.txt' -v 'ls -lad' -h 'cat tmp.txt'
+vhwatch -V 'ls -la' -V 'ls -1' -H 'ls -l' -H 'ls -a'
