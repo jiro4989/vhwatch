@@ -55,7 +55,14 @@ func main() {
 	time.Sleep(5 * time.Second)
 }
 
-// Flushはしない
+func (p *Pane) SetHeader() {
+
+}
+
+// SetText はテキストをペインにセットする。
+// セット対象のテキストがペインの表示領域を超過しそうな場合は
+// 超過しないように切り落とす。
+// termbox.Flushしないので、別途Flushが必要
 func (p *Pane) SetText(b []byte) {
 	s := string(b)
 	lines := strings.Split(s, "\n")
@@ -64,12 +71,20 @@ func (p *Pane) SetText(b []byte) {
 			break
 		}
 		y := p.Y + i
-		for j, c := range line {
-			if p.Width < j {
-				break
-			}
-			x := p.X + j
-			termbox.SetCell(x, y, c, termbox.ColorDefault, termbox.ColorDefault)
+		p.SetLineText(y, line)
+	}
+}
+
+func (p *Pane) SetLineText(y int, line string) {
+	for j, c := range line {
+		if p.Width < j {
+			// はみ出してしまっていたときは
+			// テキストが切り落とされていることを明示する
+			termbox.SetCell(p.X+j-1, y, '.', termbox.ColorDefault, termbox.ColorDefault)
+			termbox.SetCell(p.X+j-2, y, '.', termbox.ColorDefault, termbox.ColorDefault)
+			break
 		}
+		x := p.X + j
+		termbox.SetCell(x, y, c, termbox.ColorDefault, termbox.ColorDefault)
 	}
 }
