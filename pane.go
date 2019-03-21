@@ -77,7 +77,7 @@ func (p *Pane) DrawHeader() {
 	p.DrawLineText(bgline, p.Y, Offset{}, termbox.ColorBlack, termbox.ColorWhite)
 
 	// 上書きでテキストをセット
-	now := time.Now().Format("2006/01/02 03:04:05")
+	now := time.Now().Format("2006/01/02 15:04:05")
 	line := p.Name + " " + now
 	p.DrawLineText(line, p.Y, Offset{}, termbox.ColorBlack, termbox.ColorWhite)
 }
