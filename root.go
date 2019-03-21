@@ -35,24 +35,22 @@ var RootCommand = &cobra.Command{
 		termbox.SetInputMode(termbox.InputEsc)
 		termbox.Flush()
 
-		// 端末の幅を取得
-		w, h := termbox.Size()
-
-		// コマンドを描画するペインを取得
-		panes := NewPanes(col, w, h, args)
-
 		// 各ペイン毎にコマンドを定期実行
-		go mainloop(panes)
+		go mainloop(col, args)
 
 		// Ctrl-Cで終了されるまで待機
 		waitKeyInput()
 	},
 }
 
-func mainloop(panes Panes) {
+func mainloop(col int, args []string) {
 	const fc = termbox.ColorDefault
 	const bc = termbox.ColorDefault
 	for {
+		// 端末の幅を取得
+		w, h := termbox.Size()
+		// コマンドを描画するペインを取得
+		panes := NewPanes(col, w, h, args)
 		for _, p := range panes {
 			var out []byte
 			c, err := shellwords.Parse(p.Command)
