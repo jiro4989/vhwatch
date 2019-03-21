@@ -16,14 +16,15 @@ func init() {
 }
 
 var RootCommand = &cobra.Command{
-	Use:   "vhwatch",
-	Short: "vhwatch is Vertical/Horizontal Watch",
+	Use:     "vhwatch",
+	Short:   "vhwatch is Vertical/Horizontal Watch",
+	Example: "vhwatch -c 3 'echo test' 'date' 'ls -1' 'ls -lah'",
+	Version: Version,
 	Long: `
 vhwatch provides watching multiple commands execution.
 
 Repository: https://github.com/jiro4989/vhwatch
     Author: jiro4989
-   Version: ` + Version + `
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) < 1 {
