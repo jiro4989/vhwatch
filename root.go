@@ -26,6 +26,11 @@ Repository: https://github.com/jiro4989/vhwatch
    Version: ` + Version + `
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
+		if len(args) < 1 {
+			cmd.Help()
+			return
+		}
+
 		f := cmd.Flags()
 
 		col, err := f.GetInt("col")
