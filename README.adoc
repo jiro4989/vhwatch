@@ -9,7 +9,7 @@ vhwatch provides watching multiple commands execution.
 
  go version go1.11 linux/amd64
 
-== Usage
+== Usage examples
 
 please press Ctrl-C to exit vhwatch.
 
@@ -27,6 +27,15 @@ image::img/sample2.png[]
 vhwatch -c 3 'echo 1' 'echo 2' 'echo 3' 'echo 4' 'echo 5' 'echo 6' 'echo 7'
 
 image::img/sample3.png[]
+
+== Install
+
+[source,bash]
+go get -u github.com/jiro4989/vhwatch
+
+or
+
+Download binary from https://github.com/jiro4989/vhwatch/releases[Releases].
 
 == Help
 
