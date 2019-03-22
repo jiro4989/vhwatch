@@ -56,8 +56,9 @@ Examples:
 vhwatch -c 3 'echo test' 'date' 'ls -1' 'ls -lah'
 
 Flags:
-  -c, --col int        column count (default 2)
-  -h, --help           help for vhwatch
-  -n, --interval int   seconds to wait between updates (default 2)
-      --version        version for vhwatch
+  -S, --chop-long-lines   cause lines longer than the screen width to be chopped (truncated)
+  -c, --col int           column count (default 2)
+  -h, --help              help for vhwatch
+  -n, --interval int      seconds to wait between updates (default 2)
+      --version           version for vhwatch
 ----
