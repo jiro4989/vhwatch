@@ -116,7 +116,7 @@ func (p *Pane) DrawLineText(line string, y int, offset Offset, fc, bc termbox.At
 		termbox.SetCell(x, y, c, fc, bc)
 		l := runewidth.StringWidth(string(c))
 		if 1 < l {
-			termbox.SetCell(x+1, y, c, fc, bc)
+			termbox.SetCell(x+1, y, ' ', fc, bc)
 			xGap++
 		}
 	}
