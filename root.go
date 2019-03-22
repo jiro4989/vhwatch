@@ -21,9 +21,10 @@ type RootOption struct {
 
 func init() {
 	cobra.OnInitialize()
+	RootCommand.Flags().SortFlags = false
+	RootCommand.Flags().IntP("col", "c", 2, "column count")
 	RootCommand.Flags().BoolP("vertical", "V", false, "vertical split panes")
 	RootCommand.Flags().BoolP("horizontal", "H", false, "horizontal split panes")
-	RootCommand.Flags().IntP("col", "c", 2, "column count")
 	RootCommand.Flags().IntP("interval", "n", 2, "seconds to wait between updates")
 	RootCommand.Flags().BoolP("chop-long-lines", "S", false, "cause lines longer than the screen width to be chopped (truncated)")
 }
