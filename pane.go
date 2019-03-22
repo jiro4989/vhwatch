@@ -82,12 +82,10 @@ func (p *Pane) DrawHeader() {
 	p.DrawText(0, 0, []byte(line), fc, bc, true)
 }
 
-// DrawText はテキストをペインにセットする。
-// セット対象のテキストがペインの表示領域を超過しそうな場合は
-// 超過しないように切り落とす。
+// DrawText はテキストを描画する。
 // termbox.Flushしないので、別途Flushが必要
 func (p *Pane) DrawText(x, y int, b []byte, fc, bc termbox.Attribute, chopLongLines bool) {
-	prunes := NewPaneRunes(p, x, y, b, chopLongLines)
+	prunes := NewScreenRunes(p, x, y, b, chopLongLines)
 	for _, r := range prunes {
 		termbox.SetCell(r.X, r.Y, r.Rune, fc, bc)
 	}
