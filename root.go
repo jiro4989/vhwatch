@@ -11,10 +11,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type RootOption struct {
+	Col           int
+	Interval      int
+	ChopLongLines bool
+}
+
 func init() {
 	cobra.OnInitialize()
 	RootCommand.Flags().IntP("col", "c", 2, "column count")
 	RootCommand.Flags().IntP("interval", "n", 2, "seconds to wait between updates")
+	RootCommand.Flags().BoolP("chop-long-lines", "S", false, "cause lines longer than the screen width to be chopped (truncated)")
 }
 
 var RootCommand = &cobra.Command{
@@ -35,13 +42,20 @@ Repository: https://github.com/jiro4989/vhwatch
 		}
 
 		f := cmd.Flags()
+		var opt RootOption
+		var err error
 
-		col, err := f.GetInt("col")
+		opt.Col, err = f.GetInt("col")
 		if err != nil {
 			panic(err)
 		}
 
-		interval, err := f.GetInt("interval")
+		opt.Interval, err = f.GetInt("interval")
+		if err != nil {
+			panic(err)
+		}
+
+		opt.ChopLongLines, err = f.GetBool("chop-long-lines")
 		if err != nil {
 			panic(err)
 		}
@@ -55,14 +69,17 @@ Repository: https://github.com/jiro4989/vhwatch
 		termbox.Flush()
 
 		// 各ペイン毎にコマンドを定期実行
-		go mainloop(col, args, time.Duration(interval))
+		go mainloop(args, opt)
 
 		// Ctrl-Cで終了されるまで待機
 		waitKeyInput()
 	},
 }
 
-func mainloop(col int, args []string, interval time.Duration) {
+func mainloop(args []string, opt RootOption) {
+	col := opt.Col
+	interval := time.Duration(opt.Interval)
+	chopLongLines := opt.ChopLongLines
 	const fc = termbox.ColorDefault
 	const bc = termbox.ColorDefault
 	for {
@@ -84,7 +101,7 @@ func mainloop(col int, args []string, interval time.Duration) {
 				os.Exit(2)
 			}
 			p.DrawHeader()
-			p.DrawText(out, Offset{Y: 1}, fc, bc)
+			p.DrawText(out, fc, bc, Offset{Y: 1}, chopLongLines)
 		}
 		termbox.Flush()
 		time.Sleep(interval * time.Second)

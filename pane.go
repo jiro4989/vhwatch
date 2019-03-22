@@ -75,32 +75,38 @@ func (p *Pane) DrawHeader() {
 	// ヘッダの背景色を変更
 	w, _ := termbox.Size()
 	bgline := strings.Repeat(" ", w)
-	p.DrawLineText(bgline, p.Y, Offset{}, termbox.ColorBlack, termbox.ColorWhite)
+	p.DrawLineText(p.Y, bgline, termbox.ColorBlack, termbox.ColorWhite, Offset{}, true)
 
 	// 上書きでテキストをセット
 	now := time.Now().Format("2006/01/02 15:04:05")
 	line := p.Name + " " + now
-	p.DrawLineText(line, p.Y, Offset{}, termbox.ColorBlack, termbox.ColorWhite)
+	p.DrawLineText(p.Y, line, termbox.ColorBlack, termbox.ColorWhite, Offset{}, true)
 }
 
 // DrawText はテキストをペインにセットする。
 // セット対象のテキストがペインの表示領域を超過しそうな場合は
 // 超過しないように切り落とす。
 // termbox.Flushしないので、別途Flushが必要
-func (p *Pane) DrawText(b []byte, offset Offset, fc, bc termbox.Attribute) {
+func (p *Pane) DrawText(b []byte, fc, bc termbox.Attribute, offset Offset, chopLongLines bool) {
+	var yGap int // 文字列の折り返しが発生したときのズレ行数
 	s := string(b)
 	lines := strings.Split(s, "\n")
 	for i, line := range lines {
 		i += offset.Y
+		i += yGap
 		if p.Height < i {
 			break
 		}
 		y := p.Y + i
-		p.DrawLineText(line, y, offset, fc, bc)
+		p.DrawLineText(y, line, fc, bc, offset, chopLongLines)
+		if !chopLongLines {
+			w := runewidth.StringWidth(line)
+			yGap += w / p.Width
+		}
 	}
 }
 
-func (p *Pane) DrawLineText(line string, y int, offset Offset, fc, bc termbox.Attribute) {
+func (p *Pane) DrawLineText(y int, line string, fc, bc termbox.Attribute, offset Offset, chopLongLines bool) {
 	var xGap int
 	for j, c := range []rune(line) {
 		j += offset.X
