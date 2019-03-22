@@ -74,13 +74,13 @@ func mainloop(col int, args []string, interval time.Duration) {
 			cmds, err := ParseCommand(p.Command)
 			if err != nil {
 				termbox.Close()
-				log.Println(os.Stderr, fmt.Sprintf("parse command error. command=%v, err=%v", p.Command, err))
+				log.Println(fmt.Sprintf("parse command error. command=%v, err=%v", p.Command, err))
 				os.Exit(1)
 			}
 			out, err := pipeline.Output(cmds...)
 			if err != nil {
 				termbox.Close()
-				log.Println(os.Stderr, fmt.Sprintf("execute commands error. commands=%v, err=%v", cmds, err))
+				log.Println(fmt.Sprintf("execute commands error. commands=%v, err=%v", cmds, err))
 				os.Exit(2)
 			}
 			p.DrawHeader()
