@@ -66,6 +66,8 @@ func paneY(c, h, i int) int {
 	return h * (i / c)
 }
 
+// DrawHeader はヘッダ情報を描画する。
+// ヘッダはコマンド名を表示し、背景色を変更する。
 func (p *Pane) DrawHeader() {
 	// ヘッダの背景色を変更
 	w, _ := termbox.Size()
@@ -83,20 +85,19 @@ func (p *Pane) DrawHeader() {
 // 超過しないように切り落とす。
 // termbox.Flushしないので、別途Flushが必要
 func (p *Pane) DrawText(x, y int, b []byte, fc, bc termbox.Attribute, chopLongLines bool) {
-	var yGap int // 文字列の折り返しが発生したときのズレ行数
 	s := string(b)
 	lines := strings.Split(s, "\n")
 	for i, line := range lines {
 		i += y
-		i += yGap
 		if p.Height < i {
 			break
 		}
 		fy := p.Y + i
 		p.DrawLineText(x, fy, line, fc, bc, chopLongLines)
+		// 折り返しが発生していたときに、折り返された行数分ずらす
 		if !chopLongLines {
 			w := runewidth.StringWidth(line)
-			yGap += w / p.Width
+			y += w / p.Width
 		}
 	}
 }
@@ -106,23 +107,28 @@ func (p *Pane) DrawText(x, y int, b []byte, fc, bc termbox.Attribute, chopLongLi
 // chopLongLinesで管理する。
 // termbox.Flushはしない。
 func (p *Pane) DrawLineText(x, y int, line string, fc, bc termbox.Attribute, chopLongLines bool) {
-	var xGap int
-	for j, c := range []rune(line) {
-		j += x
-		j += xGap // マルチバイト文字が出現した数分だけずらす
-		if p.Width < j {
-			// はみ出してしまっていたときは
-			// テキストが切り落とされていることを明示する
-			termbox.SetCell(p.X+j-1, y, '.', fc, bc)
-			termbox.SetCell(p.X+j-2, y, '.', fc, bc)
-			break
+	var colPos int
+	for _, c := range []rune(line) {
+		colPos += x
+		if p.Width < colPos {
+			if chopLongLines {
+				// はみ出してしまっていたときは
+				// テキストが切り落とされていることを明示する
+				termbox.SetCell(p.X+colPos-1, y, '.', fc, bc)
+				termbox.SetCell(p.X+colPos-2, y, '.', fc, bc)
+				break
+			}
+			colPos = 0
+			y++
 		}
-		fx := p.X + j
+		fx := p.X + colPos
 		termbox.SetCell(fx, y, c, fc, bc)
 		l := runewidth.StringWidth(string(c))
+		// マルチバイト文字を処理したときは1文字ずらす
 		if 1 < l {
 			termbox.SetCell(fx+1, y, ' ', fc, bc)
-			xGap++
+			colPos++
 		}
+		colPos++
 	}
 }
