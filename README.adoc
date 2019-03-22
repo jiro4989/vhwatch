@@ -4,7 +4,7 @@
 = vhwatch (Vertical/Horizontal Watch)
 
 vhwatch provides watching multiple commands execution. +
-vhwatch inspires 'watch' command.
+vhwatch is inspired by `watch` command.
 
 image:https://travis-ci.org/jiro4989/vhwatch.svg?branch=master["Build Status", link="https://travis-ci.org/jiro4989/vhwatch"]
 
