@@ -4,6 +4,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mattn/go-runewidth"
 	termbox "github.com/nsf/termbox-go"
 )
 
@@ -100,8 +101,10 @@ func (p *Pane) DrawText(b []byte, offset Offset, fc, bc termbox.Attribute) {
 }
 
 func (p *Pane) DrawLineText(line string, y int, offset Offset, fc, bc termbox.Attribute) {
-	for j, c := range line {
+	var xGap int
+	for j, c := range []rune(line) {
 		j += offset.X
+		j += xGap // マルチバイト文字が出現した数分だけずらす
 		if p.Width < j {
 			// はみ出してしまっていたときは
 			// テキストが切り落とされていることを明示する
@@ -111,5 +114,10 @@ func (p *Pane) DrawLineText(line string, y int, offset Offset, fc, bc termbox.At
 		}
 		x := p.X + j
 		termbox.SetCell(x, y, c, fc, bc)
+		l := runewidth.StringWidth(string(c))
+		if 1 < l {
+			termbox.SetCell(x+1, y, c, fc, bc)
+			xGap++
+		}
 	}
 }
