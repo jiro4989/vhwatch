@@ -19,11 +19,6 @@ type Pane struct {
 
 type Panes []Pane
 
-type Offset struct {
-	X int
-	Y int
-}
-
 func NewPanes(c, tw, th int, cmds []string) (ret Panes) {
 	cmdLen := len(cmds)
 	for i, cmd := range cmds {
@@ -71,53 +66,69 @@ func paneY(c, h, i int) int {
 	return h * (i / c)
 }
 
+// DrawHeader はヘッダ情報を描画する。
+// ヘッダはコマンド名を表示し、背景色を変更する。
 func (p *Pane) DrawHeader() {
 	// ヘッダの背景色を変更
 	w, _ := termbox.Size()
 	bgline := strings.Repeat(" ", w)
-	p.DrawLineText(bgline, p.Y, Offset{}, termbox.ColorBlack, termbox.ColorWhite)
+	p.DrawLineText(0, p.Y, bgline, termbox.ColorBlack, termbox.ColorWhite, true)
 
 	// 上書きでテキストをセット
 	now := time.Now().Format("2006/01/02 15:04:05")
 	line := p.Name + " " + now
-	p.DrawLineText(line, p.Y, Offset{}, termbox.ColorBlack, termbox.ColorWhite)
+	p.DrawLineText(0, p.Y, line, termbox.ColorBlack, termbox.ColorWhite, true)
 }
 
 // DrawText はテキストをペインにセットする。
 // セット対象のテキストがペインの表示領域を超過しそうな場合は
 // 超過しないように切り落とす。
 // termbox.Flushしないので、別途Flushが必要
-func (p *Pane) DrawText(b []byte, offset Offset, fc, bc termbox.Attribute) {
+func (p *Pane) DrawText(x, y int, b []byte, fc, bc termbox.Attribute, chopLongLines bool) {
 	s := string(b)
 	lines := strings.Split(s, "\n")
 	for i, line := range lines {
-		i += offset.Y
+		i += y
 		if p.Height < i {
 			break
 		}
-		y := p.Y + i
-		p.DrawLineText(line, y, offset, fc, bc)
+		fy := p.Y + i
+		p.DrawLineText(x, fy, line, fc, bc, chopLongLines)
+		// 折り返しが発生していたときに、折り返された行数分ずらす
+		if !chopLongLines {
+			w := runewidth.StringWidth(line)
+			y += w / p.Width
+		}
 	}
 }
 
-func (p *Pane) DrawLineText(line string, y int, offset Offset, fc, bc termbox.Attribute) {
-	var xGap int
-	for j, c := range []rune(line) {
-		j += offset.X
-		j += xGap // マルチバイト文字が出現した数分だけずらす
-		if p.Width < j {
-			// はみ出してしまっていたときは
-			// テキストが切り落とされていることを明示する
-			termbox.SetCell(p.X+j-1, y, '.', fc, bc)
-			termbox.SetCell(p.X+j-2, y, '.', fc, bc)
-			break
+// DrawLineText(y は１行のテキストをターミナルに書く。
+// １行がペインの幅に収まりきらないときに、切り詰めるか、折り返すかを
+// chopLongLinesで管理する。
+// termbox.Flushはしない。
+func (p *Pane) DrawLineText(x, y int, line string, fc, bc termbox.Attribute, chopLongLines bool) {
+	var colPos int
+	for _, c := range []rune(line) {
+		colPos += x
+		if p.Width < colPos {
+			if chopLongLines {
+				// はみ出してしまっていたときは
+				// テキストが切り落とされていることを明示する
+				termbox.SetCell(p.X+colPos-1, y, '.', fc, bc)
+				termbox.SetCell(p.X+colPos-2, y, '.', fc, bc)
+				break
+			}
+			colPos = 0
+			y++
 		}
-		x := p.X + j
-		termbox.SetCell(x, y, c, fc, bc)
+		fx := p.X + colPos
+		termbox.SetCell(fx, y, c, fc, bc)
 		l := runewidth.StringWidth(string(c))
+		// マルチバイト文字を処理したときは1文字ずらす
 		if 1 < l {
-			termbox.SetCell(x+1, y, ' ', fc, bc)
-			xGap++
+			termbox.SetCell(fx+1, y, ' ', fc, bc)
+			colPos++
 		}
+		colPos++
 	}
 }
