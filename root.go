@@ -46,42 +46,10 @@ Repository: https://github.com/jiro4989/vhwatch
 			return
 		}
 
-		f := cmd.Flags()
-		var opt RootOption
-		var err error
-
-		opt.Col, err = f.GetInt("col")
+		// コマンドラインオプションの取得
+		opt, err := getOption(cmd, args)
 		if err != nil {
 			panic(err)
-		}
-
-		opt.UseVertical, err = f.GetBool("vertical")
-		if err != nil {
-			panic(err)
-		}
-
-		opt.UseHorizontal, err = f.GetBool("horizontal")
-		if err != nil {
-			panic(err)
-		}
-
-		opt.Interval, err = f.GetInt("interval")
-		if err != nil {
-			panic(err)
-		}
-
-		opt.ChopLongLines, err = f.GetBool("chop-long-lines")
-		if err != nil {
-			panic(err)
-		}
-
-		switch {
-		case opt.UseVertical:
-			// 垂直分割のみにする
-			opt.Col = len(args)
-		case opt.UseHorizontal:
-			// 水平分割のみにする
-			opt.Col = 1
 		}
 
 		// termboxの初期化
@@ -98,6 +66,46 @@ Repository: https://github.com/jiro4989/vhwatch
 		// Ctrl-Cで終了されるまで待機
 		waitKeyInput()
 	},
+}
+
+func getOption(cmd *cobra.Command, args []string) (opt RootOption, err error) {
+	f := cmd.Flags()
+
+	opt.Col, err = f.GetInt("col")
+	if err != nil {
+		return
+	}
+
+	opt.UseVertical, err = f.GetBool("vertical")
+	if err != nil {
+		return
+	}
+
+	opt.UseHorizontal, err = f.GetBool("horizontal")
+	if err != nil {
+		return
+	}
+
+	opt.Interval, err = f.GetInt("interval")
+	if err != nil {
+		return
+	}
+
+	opt.ChopLongLines, err = f.GetBool("chop-long-lines")
+	if err != nil {
+		return
+	}
+
+	switch {
+	case opt.UseVertical:
+		// 垂直分割のみにする
+		opt.Col = len(args)
+	case opt.UseHorizontal:
+		// 水平分割のみにする
+		opt.Col = 1
+	}
+
+	return opt, nil
 }
 
 func mainloop(args []string, opt RootOption) {
