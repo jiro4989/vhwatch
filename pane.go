@@ -19,11 +19,6 @@ type Pane struct {
 
 type Panes []Pane
 
-type Offset struct {
-	X int
-	Y int
-}
-
 func NewPanes(c, tw, th int, cmds []string) (ret Panes) {
 	cmdLen := len(cmds)
 	for i, cmd := range cmds {
@@ -75,30 +70,30 @@ func (p *Pane) DrawHeader() {
 	// ヘッダの背景色を変更
 	w, _ := termbox.Size()
 	bgline := strings.Repeat(" ", w)
-	p.DrawLineText(p.Y, bgline, termbox.ColorBlack, termbox.ColorWhite, Offset{}, true)
+	p.DrawLineText(0, p.Y, bgline, termbox.ColorBlack, termbox.ColorWhite, true)
 
 	// 上書きでテキストをセット
 	now := time.Now().Format("2006/01/02 15:04:05")
 	line := p.Name + " " + now
-	p.DrawLineText(p.Y, line, termbox.ColorBlack, termbox.ColorWhite, Offset{}, true)
+	p.DrawLineText(0, p.Y, line, termbox.ColorBlack, termbox.ColorWhite, true)
 }
 
 // DrawText はテキストをペインにセットする。
 // セット対象のテキストがペインの表示領域を超過しそうな場合は
 // 超過しないように切り落とす。
 // termbox.Flushしないので、別途Flushが必要
-func (p *Pane) DrawText(b []byte, fc, bc termbox.Attribute, offset Offset, chopLongLines bool) {
+func (p *Pane) DrawText(x, y int, b []byte, fc, bc termbox.Attribute, chopLongLines bool) {
 	var yGap int // 文字列の折り返しが発生したときのズレ行数
 	s := string(b)
 	lines := strings.Split(s, "\n")
 	for i, line := range lines {
-		i += offset.Y
+		i += y
 		i += yGap
 		if p.Height < i {
 			break
 		}
-		y := p.Y + i
-		p.DrawLineText(y, line, fc, bc, offset, chopLongLines)
+		fy := p.Y + i
+		p.DrawLineText(x, fy, line, fc, bc, chopLongLines)
 		if !chopLongLines {
 			w := runewidth.StringWidth(line)
 			yGap += w / p.Width
@@ -106,10 +101,14 @@ func (p *Pane) DrawText(b []byte, fc, bc termbox.Attribute, offset Offset, chopL
 	}
 }
 
-func (p *Pane) DrawLineText(y int, line string, fc, bc termbox.Attribute, offset Offset, chopLongLines bool) {
+// DrawLineText(y は１行のテキストをターミナルに書く。
+// １行がペインの幅に収まりきらないときに、切り詰めるか、折り返すかを
+// chopLongLinesで管理する。
+// termbox.Flushはしない。
+func (p *Pane) DrawLineText(x, y int, line string, fc, bc termbox.Attribute, chopLongLines bool) {
 	var xGap int
 	for j, c := range []rune(line) {
-		j += offset.X
+		j += x
 		j += xGap // マルチバイト文字が出現した数分だけずらす
 		if p.Width < j {
 			// はみ出してしまっていたときは
@@ -118,11 +117,11 @@ func (p *Pane) DrawLineText(y int, line string, fc, bc termbox.Attribute, offset
 			termbox.SetCell(p.X+j-2, y, '.', fc, bc)
 			break
 		}
-		x := p.X + j
-		termbox.SetCell(x, y, c, fc, bc)
+		fx := p.X + j
+		termbox.SetCell(fx, y, c, fc, bc)
 		l := runewidth.StringWidth(string(c))
 		if 1 < l {
-			termbox.SetCell(x+1, y, ' ', fc, bc)
+			termbox.SetCell(fx+1, y, ' ', fc, bc)
 			xGap++
 		}
 	}

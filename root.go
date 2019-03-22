@@ -101,7 +101,7 @@ func mainloop(args []string, opt RootOption) {
 				os.Exit(2)
 			}
 			p.DrawHeader()
-			p.DrawText(out, fc, bc, Offset{Y: 1}, chopLongLines)
+			p.DrawText(0, 1, out, fc, bc, chopLongLines)
 		}
 		termbox.Flush()
 		time.Sleep(interval * time.Second)
