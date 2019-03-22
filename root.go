@@ -1,10 +1,9 @@
 package main
 
 import (
-	"os/exec"
 	"time"
 
-	"github.com/mattn/go-shellwords"
+	pipeline "github.com/mattn/go-pipeline"
 	termbox "github.com/nsf/termbox-go"
 	"github.com/spf13/cobra"
 )
@@ -69,23 +68,11 @@ func mainloop(col int, args []string, interval time.Duration) {
 		// コマンドを描画するペインを取得
 		panes := NewPanes(col, w, h, args)
 		for _, p := range panes {
-			var out []byte
-			c, err := shellwords.Parse(p.Command)
+			cmds, err := ParseCommand(p.Command)
 			if err != nil {
 				panic(err)
 			}
-			switch len(c) {
-			case 0:
-				// 空の文字列が渡された場合
-				return
-			case 1:
-				// コマンドのみを渡された場合
-				out, err = exec.Command(c[0]).Output()
-			default:
-				// コマンド+オプションを渡された場合
-				// オプションは可変長でexec.Commandに渡す
-				out, err = exec.Command(c[0], c[1:]...).Output()
-			}
+			out, err := pipeline.Output(cmds...)
 			if err != nil {
 				panic(err)
 			}
