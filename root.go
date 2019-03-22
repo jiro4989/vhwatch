@@ -12,6 +12,8 @@ import (
 )
 
 type RootOption struct {
+	UseVertical   bool
+	UseHorizontal bool
 	Col           int
 	Interval      int
 	ChopLongLines bool
@@ -19,6 +21,8 @@ type RootOption struct {
 
 func init() {
 	cobra.OnInitialize()
+	RootCommand.Flags().BoolP("vertical", "V", false, "vertical split panes")
+	RootCommand.Flags().BoolP("horizontal", "H", false, "horizontal split panes")
 	RootCommand.Flags().IntP("col", "c", 2, "column count")
 	RootCommand.Flags().IntP("interval", "n", 2, "seconds to wait between updates")
 	RootCommand.Flags().BoolP("chop-long-lines", "S", false, "cause lines longer than the screen width to be chopped (truncated)")
@@ -50,6 +54,16 @@ Repository: https://github.com/jiro4989/vhwatch
 			panic(err)
 		}
 
+		opt.UseVertical, err = f.GetBool("vertical")
+		if err != nil {
+			panic(err)
+		}
+
+		opt.UseHorizontal, err = f.GetBool("horizontal")
+		if err != nil {
+			panic(err)
+		}
+
 		opt.Interval, err = f.GetInt("interval")
 		if err != nil {
 			panic(err)
@@ -58,6 +72,15 @@ Repository: https://github.com/jiro4989/vhwatch
 		opt.ChopLongLines, err = f.GetBool("chop-long-lines")
 		if err != nil {
 			panic(err)
+		}
+
+		switch {
+		case opt.UseVertical:
+			// 垂直分割のみにする
+			opt.Col = len(args)
+		case opt.UseHorizontal:
+			// 水平分割のみにする
+			opt.Col = 1
 		}
 
 		// termboxの初期化
