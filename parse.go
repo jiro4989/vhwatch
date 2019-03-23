@@ -30,8 +30,7 @@ func ParseCommand(line string) ([][]string, error) {
 				break
 			}
 		}
-		//fmt.Println(string([]rune(line)[parser.Position:i]))
-		line = string([]rune(line)[i+1:])
+		line = line[i+1:]
 	}
 	return ret, nil
 }
