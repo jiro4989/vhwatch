@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	pipeline "github.com/mattn/go-pipeline"
+	pipeline "github.com/jiro4989/go-pipeline"
 	termbox "github.com/nsf/termbox-go"
 	"github.com/spf13/cobra"
 )
@@ -126,12 +126,12 @@ func mainloop(args []string, opt RootOption) {
 				log.Println(fmt.Sprintf("parse command error. command=%v, err=%v", p.Command, err))
 				os.Exit(1)
 			}
-			out, err := pipeline.Output(cmds...)
-			if err != nil {
-				termbox.Close()
-				log.Println(fmt.Sprintf("execute commands error. commands=%v, err=%v", cmds, err))
-				os.Exit(2)
-			}
+			out, err := pipeline.CombinedOutput(cmds...)
+			// エラーが発生してもwatchを継続してほしいためerrチェックはしない
+			// if string(out) == "" {
+			// 	// 存在しないコマンドを実行しようとしたときはエラーが返るため
+			// 	out = []byte(err.Error())
+			// }
 			p.DrawHeader()
 			p.DrawText(0, 1, out, fc, bc, chopLongLines)
 		}
