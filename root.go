@@ -6,7 +6,7 @@ import (
 	"os"
 	"time"
 
-	pipeline "github.com/jiro4989/go-pipeline"
+	pipeline "github.com/mattn/go-pipeline"
 	termbox "github.com/nsf/termbox-go"
 	"github.com/spf13/cobra"
 )
