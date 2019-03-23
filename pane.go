@@ -18,27 +18,32 @@ type Pane struct {
 
 type Panes []Pane
 
+func NewPane(i, c, tw, th int, cmd string, cmdLen int) Pane {
+	pw := paneWidth(c, tw)          // 1ペインあたりの幅
+	ph := paneHeight(c, th, cmdLen) // 1ペインあたりの幅
+
+	x := paneX(c, pw, i)
+	y := paneY(c, ph, i)
+	// ペインの下のペインが空いていたら縦幅を拡張
+	h := ph
+	if cmdLen-1 < i+c && (cmdLen-1)/c != i/c {
+		h += ph
+	}
+	p := Pane{
+		Name:    cmd,
+		X:       x,
+		Y:       y,
+		Width:   pw,
+		Height:  h,
+		Command: cmd,
+	}
+	return p
+}
+
 func NewPanes(c, tw, th int, cmds []string) (ret Panes) {
 	cmdLen := len(cmds)
 	for i, cmd := range cmds {
-		pw := paneWidth(c, tw)          // 1ペインあたりの幅
-		ph := paneHeight(c, th, cmdLen) // 1ペインあたりの幅
-
-		x := paneX(c, pw, i)
-		y := paneY(c, ph, i)
-		// ペインの下のペインが空いていたら縦幅を拡張
-		h := ph
-		if cmdLen-1 < i+c && (cmdLen-1)/c != i/c {
-			h += ph
-		}
-		p := Pane{
-			Name:    cmd,
-			X:       x,
-			Y:       y,
-			Width:   pw,
-			Height:  h,
-			Command: cmd,
-		}
+		p := NewPane(i, c, tw, th, cmd, cmdLen)
 		ret = append(ret, p)
 	}
 	return

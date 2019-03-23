@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 	"time"
 
 	pipeline "github.com/mattn/go-pipeline"
@@ -112,33 +113,55 @@ func mainloop(args []string, opt RootOption) {
 	col := opt.Col
 	interval := time.Duration(opt.Interval)
 	chopLongLines := opt.ChopLongLines
+
 	const fc = termbox.ColorDefault
 	const bc = termbox.ColorDefault
-	for {
-		// 端末の幅を取得
-		w, h := termbox.Size()
-		// コマンドを描画するペインを取得
-		panes := NewPanes(col, w, h, args)
-		for _, p := range panes {
-			cmds, err := ParseCommand(p.Command)
-			if err != nil {
-				termbox.Close()
-				log.Println(fmt.Sprintf("parse command error. command=%v, err=%v", p.Command, err))
-				os.Exit(1)
+
+	var wg sync.WaitGroup
+
+	// 端末の幅を取得
+	w, h := termbox.Size()
+
+	// コマンドを描画するペインを取得
+	panes := NewPanes(col, w, h, args)
+	for i, p := range panes {
+		wg.Add(1)
+		// ペインの数だけスレッドを起動
+		go func(wg *sync.WaitGroup, p Pane, i int) {
+			defer wg.Done()
+			for {
+				cmds, err := ParseCommand(p.Command)
+				if err != nil {
+					termbox.Close()
+					log.Println(fmt.Sprintf("parse command error. command=%v, err=%v", p.Command, err))
+					os.Exit(1)
+				}
+				out, err := pipeline.Output(cmds...)
+				if err != nil {
+					termbox.Close()
+					log.Println(fmt.Sprintf("execute commands error. commands=%v, err=%v", cmds, err))
+					os.Exit(2)
+				}
+				p.DrawHeader()
+				p.DrawText(0, 1, out, fc, bc, chopLongLines)
+				termbox.Flush() // FIXME 一応こうするとうごくが・・・
+
+				time.Sleep(interval * time.Second)
+
+				// 端末の幅は毎秒取得しなおしているので更新
+				p = NewPane(i, col, w, h, p.Command, len(args))
 			}
-			out, err := pipeline.Output(cmds...)
-			if err != nil {
-				termbox.Close()
-				log.Println(fmt.Sprintf("execute commands error. commands=%v, err=%v", cmds, err))
-				os.Exit(2)
-			}
-			p.DrawHeader()
-			p.DrawText(0, 1, out, fc, bc, chopLongLines)
-		}
-		termbox.Flush()
-		time.Sleep(interval * time.Second)
-		termbox.Clear(fc, bc)
+		}(&wg, p, i)
 	}
+
+	for {
+		termbox.Flush()
+		time.Sleep(1 * time.Second) // 画面の再描画自体は1秒で行う
+		termbox.Clear(fc, bc)
+		w, h = termbox.Size() // 端末の幅を更新
+	}
+
+	wg.Wait()
 }
 
 func waitKeyInput() {
